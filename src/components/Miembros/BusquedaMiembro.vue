@@ -66,7 +66,7 @@ export default {
       if (value.data) {
         this.busqueda += value.data;
         let payload = {
-          metodo: "obtener_nombre_matricula",
+          metodo: "obtener_nombre_matricula_cedula",
           busqueda: this.busqueda,
         };
         this.cargando = true

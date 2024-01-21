@@ -54,6 +54,7 @@ export default {
     if(logeado) {
       this.logeado = true
     }
+    
   },
 
   methods: {

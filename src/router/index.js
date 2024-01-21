@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import HelloWorld from '@/components/HelloWorld'
 import Membresias from '../components/Membresias/Membresias'
 import Miembros from '../components/Miembros/Miembros'
 import Recepcion from '../components/Recepcion/Recepcion'

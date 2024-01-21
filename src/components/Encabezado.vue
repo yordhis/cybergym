@@ -24,8 +24,8 @@
             </v-avatar>
             {{ nombreGimnasio }}
             </v-list-item-title>
-          <v-list-item-subtitle class="text-h6 white--text"> {{ nombreUsuario }} </v-list-item-subtitle>
-          <v-list-item-subtitle class="text-h6 white--text"> {{ rolUsuario }} </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-h6 white--text"> {{ nombreUsuario.toUpperCase() }} </v-list-item-subtitle>
+          <v-list-item-subtitle class="text-h6 white--text"> {{ rolUsuario.toLowerCase() }} </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
       <v-divider></v-divider>
@@ -59,6 +59,7 @@ listaDeNavegacionR = [
       { title: "Recepción", icon: "mdi mdi-table-edit", link: "/recepcion" },
       // { title: "Registrar visita", icon: "mdi-home-account", link: "/registrar-visita" },
       { title: "Miembros", icon: "mdi-weight-lifter", link: "/miembros" },
+      { title: "Generar Reporte de pagos", icon: "mdi-account-cash", link: "/pagos" },
       { title: "Mi perfil", icon: "mdi-account-key", link: "/perfil" },
     ];
 
@@ -97,9 +98,21 @@ export default {
     this.nombreGimnasio = localStorage.getItem("nombreGimnasio");
     this.logo = localStorage.getItem("logoGimnasio");
     this.items = this.rolUsuario == "RECEPCIONISTA" ? listaDeNavegacionR : listaDeNavegacionA;
+
+    // this.validarPermisosDelRol(this.items);
+    
   },
 
   methods:{ 
+    // validarPermisosDelRol(items){
+    //   let estatusDelPermiso = false;
+    //    items.forEach(permiso => {
+    //         console.log(window.location.pathname);
+    //         if(permiso.link.slice(1) == window.location.pathname) return estatusDelPermiso = true;
+    //    });
+
+    //    if(!estatusDelPermiso) window.location.href='/#/recepcion';
+    // },
     salir(){
       localStorage.removeItem('logeado')
       localStorage.removeItem('nombreUsuario')
@@ -112,7 +125,7 @@ export default {
       return Utiles.generarURL(imagen);
     },
 
-  }
+  },
 };
 
 </script>

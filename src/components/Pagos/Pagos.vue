@@ -3,8 +3,6 @@
         <h1>Pagos <span class="indigo--text display-1"> ${{ totalPagos }}</span></h1>
         <periodo-busqueda @buscar="onBuscar"/>
         
-        <cartas-totales v-if="pagos.length > 0" :totales="totalesMembresias" :titulo="'Pagos realizados por membresía'" :icono="'mdi-currency-usd'" :color="'deep-orange darken-1'" />
-        
         <v-card class="mt-3">
             <v-card-title>
                 Pagos realizados: 
@@ -29,6 +27,7 @@
             class="elevation-1"
             :footer-props="{itemsPerPageText: 'Por página'}"
             >
+                
                 <template v-slot:[`item.imagen`]="{ item }">
                     <v-avatar v-if="item.imagen">
                     <img
@@ -54,9 +53,15 @@
             </v-btn>
            
         </v-card>
-        <cartas-totales v-if="pagos.length > 0" class="mt-3" :totales="totalesUsuarios" :titulo="'Pagos realizados por usuario'" :icono="'mdi-account-cash'" :color="'green darken-3'" />
 
-        <cartas-totales-miembros v-if="pagos.length > 0" class="mt-3" :totales="totalesMiembros" :titulo="'Pagos realizados por miembros'"  />
+        <template v-if="rolUsuario == 'ADMINISTRADOR' ">
+
+            <cartas-totales v-if="pagos.length > 0" :totales="totalesMembresias" :titulo="'Pagos realizados por membresía'" :icono="'mdi-currency-usd'" :color="'deep-orange darken-1'" />
+    
+            <cartas-totales v-if="pagos.length > 0" class="mt-3" :totales="totalesUsuarios" :titulo="'Pagos realizados por usuario'" :icono="'mdi-account-cash'" :color="'green darken-3'" />
+    
+            <cartas-totales-miembros v-if="pagos.length > 0" class="mt-3" :totales="totalesMiembros" :titulo="'Pagos realizados por miembros'"  />
+        </template>
 
         <v-overlay :value="cargando">
             <v-progress-circular
@@ -97,7 +102,8 @@ export default {
         totalPagos: 0,
         totalesMembresias: [],
         totalesUsuarios: [],
-        totalesMiembros: []
+        totalesMiembros: [],
+        rolUsuario: localStorage.getItem('rolUsuario')
     }),
 
     mounted(){
@@ -141,103 +147,88 @@ export default {
 
         /** TOMA EL ELEMENTO HTML PARA IMPRIMIR UN PDF O TIKCKET */
         imprimirElemento(elemento){
-            var ventana = window.open('', 'PRINT', 'height=400,width=600');
-            ventana.document.write('<html><head><title>Reporte</title>');
+            var ventana = window.open('', 'PRINT', 'height=800,width=800');
+            ventana.document.write('<html><head><title>Reporte de pagos</title>');
             ventana.document.write(`<style>
-        * {
-            margin-top: 0%;
-            font-size: 10px;
-            font-family: 'Times New Roman';
-        }
+            * {
+                margin-top: 0;
+                font-size: 12px;
+                font-family: 'Times New Roman';
+            }
 
-        .img{
-            width: 100px;
-        }
+            body{
+                margin: 0;
+                position: relative;
+                min-height: 100vh;
+            }
 
-
-        td,
-        th,
-        tr,
-        table {
-            padding: 5px;
-            /* border-top: 1px solid rgb(27, 25, 25); */
-            border-collapse: collapse;
-        }
-
-        th.titulo{
-            text-align: left;
-            font-size: 16px;
-        }
-
-        tr.border {
-            border-top: 1px solid rgb(27, 25, 25);
-            border-bottom: 1px solid rgb(27, 25, 25);
-        }
-        
-        td.descripcion,
-        th.descripcion {
-            text-align: left;
-            width: auto;
-            max-width: 350px;
-        
-        }
-        td.descripcion-producto,
-        th.descripcion-producto {
-            font-size: 11px;
-            text-align: left;
-            width: auto;
-            max-width: 350px;
-        }
-        td.descripcion-num,
-        th.descripcion-num {
-            font-size: 11px;
-            text-align: right;
-            width: auto;
-        }
-        
+            .img{
+                width: 100px;
+            }
 
 
-        td.numero,
-        th.numero {
-            text-align: right;
-            font-size: 14px;
-        }
+            td,
+            th,
+            tr,
+            table {
+                padding: 2px;
+                /* border-top: 1px solid rgb(27, 25, 25); */
+                border-collapse: collapse;
+                width: 60em;
+            }
 
-        td.total-bruto{
-            text-align: right;
-        }
-        td.total-neto{
-            text-align: right;
-        }
-        /* 
+            th.titulo{
+                font-size: 25px;
+            }
+            td.descripcion{
+                padding: 5px;
+                font-size: 10px;
+                max-width: 150px;
+            }
 
-        td.precio,
-        th.precio {
-            font-size: 18px;
-            width: 160px;
-            max-width: 160px;
-            word-break: break-all;
-            text-align: right;
-        } */
+            th.numero,
+            td.numero{
+                padding: 5px;
+                width: auto;
+                max-width: 150px;
+            }
 
-        .centrado {
-            margin: 0%;
-            text-align: center;
-            align-content: center;
-        }
+            .table-totales{
+                padding: 2px;
+                position: absolute;
+                bottom: 15em;
+                width: 60em;
+            }
 
-        .ticket {
-            width: 325px;
-            max-width: 355px;
-        }
+            .text__left{
+                text-align: left;
+            }
+            .text__right{
+                text-align: right;
+            }
 
-        img {
-            max-width: 150px;
-            width: 150px;
-            margin-top: 3%;
-            margin-bottom: 0%;
-            padding-left: 28%;
-        }
+            tr.border {
+                border-top: 1px solid rgb(27, 25, 25);
+                border-bottom: 1px solid rgb(27, 25, 25);
+            }
+
+            .red{
+                color: brown;
+            }
+
+            .centrado {
+                margin: 0%;
+                text-align: center;
+                align-content: center;
+            }
+            img {
+                max-width: 100px;
+                width: 100px;
+                margin: 0%;
+                margin-bottom: 0%;
+                padding-left: 0%;
+            }
+
             </style>`);
             ventana.document.write('</head><body >');
             ventana.document.write(elemento);
@@ -262,68 +253,100 @@ export default {
                     let [iAnio, iMes, iDia ] = item.fecha.split(" ")[0].split('-');
                     let dia = new Date(iAnio, iMes-1, iDia).toLocaleString('ves', { weekday: 'long' });
 
-                    listaDeVentasDetallada += `
-                        <tr>
-                            <td> ${item.membresia} </td>
-                            <td class="descripcion-producto"> ${dia} </td>
-                            <td class="numero">${item.fecha.split(" ")[0]}</td>
-                            <td class="numero">${item.nombre} <br> C.I.: ${item.cedula}</td>
-                            <td class="numero">${item.metodo_pago}</td>
-                            <td class="numero">${item.monto}</td>
-                        </tr>
-                    `;
+                    if(this.busqueda.length){
+                        if(this.busqueda.toUpperCase() == item.usuario.toUpperCase()){
+                            listaDeVentasDetallada += `
+                                    <tr>
+                                        <td class="text__left "> ${item.membresia}</td>
+                                        <td class="text__left">  ${dia}</td>
+                                        <td class="text__left ">${item.fecha.split(" ")[0]}</td>
+                                        <td class="text__left ">
+                                            ${item.nombre.toUpperCase()} <br> C.I.: ${item.cedula}
+                                        </td>
+                                        <td class="text__left">${item.usuario.toUpperCase()}</td>
+                                        <td class="text__left">${item.metodo_pago}</td>
+                                        <td class="text__right">${item.monto}</td>
+                                    </tr> 
+                            `;
+                            subtotalBruto +=  parseFloat(item.monto);
+                        }
+                    }else{
 
-                    subtotalBruto +=  parseFloat(item.monto);
-                   
+                        listaDeVentasDetallada += `
+                                <tr>
+                                    <td class="text__left "> ${item.membresia}</td>
+                                    <td class="text__left">  ${dia}</td>
+                                    <td class="text__left ">${item.fecha.split(" ")[0]}</td>
+                                    <td class="text__left ">
+                                        ${item.nombre.toUpperCase()} <br> C.I.: ${item.cedula}
+                                    </td>
+                                    <td class="text__left">${item.usuario.toUpperCase()}</td>
+                                    <td class="text__left">${item.metodo_pago}</td>
+                                    <td class="text__right">${item.monto}</td>
+                                </tr> 
+                        `;
+                        subtotalBruto +=  parseFloat(item.monto);
+                    }
+
                 });
 
                 return `
                 <table class="table">
-                    <thead>
-                        <tr>
+                        <thead>
+                            <tr>
+                                <th colspan="1"><img src="${Utiles.generarURL(localStorage.getItem('logoGimnasio'))}" alt="logo" ></th>
+                                <th colspan="6" class="text__left titulo">REPORTE DE PAGOS</th>
+                            </tr>
+                            <tr class="border">
+                                <th colspan="3" class="text__left">
+                                    QUIEN EMITIO EL REPORTE: ${localStorage.getItem('nombreUsuario').toUpperCase()}
+                                </th>
+                                <th colspan="4" class="text__right">TIPO DE REPORTE | 
+                                    <span class="red">
+                                        ${config.fechaFin ? 'POR RANGO DE FECHA' : 'DEL DÍA'}
+                                    </span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="7" class="text__left">
+                                    FECHA DE EMISIÓN DEL REPORTE:
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="7" class="text__left">
+                                    DE: ${config.fechaFin   ? config.fechaInicio + " HASTA: " + config.fechaFin 
+                                                            : fecha}
+                                </th>
+                            </tr>
+                            <tr class="border">
+                                <th class="text__left ">MEMBRESIA</th>
+                                <th class="text__left">DÍA</th>
+                                <th class="text__left ">FECHA</th>
+                                <th class="text__left ">CLIENTE</th>
+                                <th class="text__left ">RECEPCIONISTA</th>
+                                <th class="text__left ">MÉTODO DE PAGO</th>
+                                <th class="text__right ">SUBTOTAL</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                           ${listaDeVentasDetallada}
+                        </tbody>
+                        <tfoot>
+                            <tr class="border">
+                                <td colspan="6" class="text__right">TOTAL: </td>
+                                <td colspan="1" class="text__right">${subtotalBruto} USD</td>
+                            </tr>
+                        </tfoot>
 
-                            <th colspan="8" class="titulo">
-                                REPORTE
-                            </th>
-                        </tr>
-                        <tr>
-                            <th colspan="4" class="descripcion">
-                                FECHA DE EMISIÓN DEL REPORTE: <br> 
-                                ${config.fechaInicio ? config.fechaInicio : fecha}  ${config.fechaFin ? "Hasta:" + config.fechaFin : ""}
-                            </th>
-                            
-                            <th colspan="4" class="descripcion">TIPO DE REPORTE: RESUMEN</th>
-                            
-                        </tr>
-                        <tr class="border">
-                            <th class="descripcion">TIPO DE MEMBRESIA</th>
-                            <th class="descripcion">DÍA</th>
-                            <th class="descripcion">FECHA</th>
-                            <th class="descripcion">CLIENTE</th>
-                            <th class="numero">METODO DE PAGO</th>
-                            <th class="numero">MONTO</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                        ${listaDeVentasDetallada}
-                    
-
-                    </tbody>
-
-                    <tfoot >
-                        <tr class="border">
-                            <td colspan="5" class="total-bruto">TOTAL:</td>
-                            <td  class="numero"> ${subtotalBruto} USD </td>
-                        </tr>
-                    </tfoot>
-                </table>
+                        
+                    </table>
                 `;
         },
 
         imprimirReporte(){
             console.log("imprimiendo reporte");
-
+            console.log(this.busqueda)
             this.imprimirElemento(this.reporteHtml(this.pagos, this.filtros))
 
         }

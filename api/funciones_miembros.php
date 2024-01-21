@@ -24,8 +24,6 @@ function generarMatricula(){
     return date('Y').'-'.$ultimoId;
 }
 
-
-
 function obtenerMiembros(){
     $sentencia = "SELECT miembros.*, membresias.nombre AS membresia 
     FROM miembros
@@ -40,6 +38,15 @@ function obtenerMiembroNombreMatricula($busqueda){
     LEFT JOIN membresias ON membresias.id = miembros.idMembresia
     WHERE miembros.cedula LIKE ? ";
     $parametros = [ "%".$busqueda."%" ];
+    return selectPrepare($sentencia, $parametros);
+}
+
+function getMiembro($cedula){
+    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    FROM miembros
+    LEFT JOIN membresias ON membresias.id = miembros.idMembresia
+    WHERE miembros.cedula = ? ";
+    $parametros = [ $cedula ];
     return selectPrepare($sentencia, $parametros);
 }
 

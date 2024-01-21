@@ -5,7 +5,7 @@
 
     <h1>Miembros</h1>
    
-
+    <BusquedaMiembro></BusquedaMiembro>
     <v-data-table
       :loading="cargando"
       :headers="encabezadoTabla"
@@ -187,10 +187,11 @@ import Utiles from "../../Servicios/Utiles";
 import RealizarPago from "./RealizarPago.vue";
 import DialogoEliminar from "../Dialogos/DialogoEliminar.vue";
 import CredencialMiembro from "./CredencialMiembro.vue";
+import BusquedaMiembro from "./BusquedaMiembro.vue";
 
 export default {
   name: "Miembros",
-  components: { RealizarPago, DialogoEliminar, CredencialMiembro },
+  components: { RealizarPago, DialogoEliminar, CredencialMiembro, BusquedaMiembro },
 
   data: () => ({
     encabezadoTabla: [

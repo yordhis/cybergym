@@ -132,24 +132,24 @@ export default {
 
     crearCartas(visitas, pagos) {
       this.datosVisitas = [
-        {
-          color: "purple darken-1",
-          icono: "mdi-calendar-star",
-          nombre: "Total visitas",
-          total: visitas.totalVisitas,
-        },
+        // {
+        //   color: "purple darken-1",
+        //   icono: "mdi-calendar-star",
+        //   nombre: "Total visitas",
+        //   total: visitas.totalVisitas,
+        // },
         {
           color: "pink darken-1",
           icono: "mdi-calendar",
-          nombre: "Visitas hoy",
+          nombre: "Total de visitas al gym",
           total: visitas.visitasHoy,
         },
-        {
-          color: "red darken-1",
-          icono: "mdi-calendar-range",
-          nombre: "Visitas semana",
-          total: visitas.visitasSemana,
-        },
+        // {
+        //   color: "red darken-1",
+        //   icono: "mdi-calendar-range",
+        //   nombre: "Visitas semana",
+        //   total: visitas.visitasSemana,
+        // },
         // {
         //   color: "indigo darken-1",
         //   icono: "mdi-calendar-month",
