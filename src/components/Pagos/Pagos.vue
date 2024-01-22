@@ -9,6 +9,7 @@
                 <b v-if="!filtros.fechaInicio"> hoy</b>
                 <b v-if="filtros.fechaInicio"> {{ filtros.fechaInicio }} al {{ filtros.fechaFin}}</b>
                 <v-spacer></v-spacer>
+
                 <v-text-field
                     v-model="busqueda"
                     append-icon="mdi-magnify"
@@ -16,6 +17,15 @@
                     single-line
                     hide-details
                 ></v-text-field>
+
+                <v-select
+                v-model="busqueda"
+                clearable
+                
+                label="Filtre por recepcionista"
+                :items="recepcionistas"
+                variant="solo-inverted"
+                ></v-select>
             </v-card-title>
 
             <v-data-table
@@ -85,6 +95,7 @@ export default {
         busqueda: "",
         cargando: false,
         pagos: [],
+        recepcionistas: [],
         encabezadoTabla: [
             {text: "Imagen", sortable: true, value: "imagen"},
             {text: "Miembro", sortable: true, value: "nombre"},
@@ -108,6 +119,7 @@ export default {
 
     mounted(){
         this.obtenerPagos()
+        this.obtenerRecepcionistas()
     },
 
     methods: {
@@ -143,6 +155,16 @@ export default {
                 this.cargando = false
             })
 
+        },
+
+        obtenerRecepcionistas(){
+            const payload = { metodo: "get" };
+            HttpService.obtenerConDatos(payload, "usuarios.php").then((resultado) => {
+                console.log(resultado);
+                resultado.forEach(recep => {
+                    this.recepcionistas.push(recep.usuario);
+                });
+            });
         },
 
         /** TOMA EL ELEMENTO HTML PARA IMPRIMIR UN PDF O TIKCKET */
@@ -253,7 +275,7 @@ export default {
                     let [iAnio, iMes, iDia ] = item.fecha.split(" ")[0].split('-');
                     let dia = new Date(iAnio, iMes-1, iDia).toLocaleString('ves', { weekday: 'long' });
 
-                    if(this.busqueda.length){
+                    if(this.busqueda){
                         if(this.busqueda.toUpperCase() == item.usuario.toUpperCase()){
                             listaDeVentasDetallada += `
                                     <tr>
@@ -314,8 +336,18 @@ export default {
                             </tr>
                             <tr>
                                 <th colspan="7" class="text__left">
+                                    ${fecha}
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="7" class="text__left">
+                                    RANGO DE FECHA DEL REPORTE:
+                                </th>
+                            </tr>
+                            <tr>
+                                <th colspan="7" class="text__left">
                                     DE: ${config.fechaFin   ? config.fechaInicio + " HASTA: " + config.fechaFin 
-                                                            : fecha}
+                                                            : config.fechaInicio }
                                 </th>
                             </tr>
                             <tr class="border">

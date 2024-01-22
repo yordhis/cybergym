@@ -36,9 +36,20 @@ function obtenerMiembroNombreMatricula($busqueda){
     $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
     FROM miembros
     LEFT JOIN membresias ON membresias.id = miembros.idMembresia
-    WHERE miembros.cedula LIKE ? ";
-    $parametros = [ "%".$busqueda."%" ];
-    return selectPrepare($sentencia, $parametros);
+    WHERE miembros.cedula LIKE ? OR miembros.nombre LIKE ?";
+    $parametros = [ "%".$busqueda."%", "%".$busqueda."%" ];
+    $miembros = selectPrepare($sentencia, $parametros);
+    return verificarMembresia( $miembros );
+}
+
+function getMiembroFilter($filter){
+    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    FROM miembros
+    LEFT JOIN membresias ON membresias.id = miembros.idMembresia
+    WHERE miembros.cedula = ?";
+    $parametros = [ $filter ];
+    $miembros =  selectPrepare( $sentencia, $parametros );
+    return verificarMembresia( $miembros );
 }
 
 function getMiembro($cedula){

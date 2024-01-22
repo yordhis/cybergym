@@ -5,7 +5,25 @@
 
     <h1>Miembros</h1>
    
-    <BusquedaMiembro></BusquedaMiembro>
+    <v-card>
+      <v-card-text>
+        <v-text-field 
+        v-model="filter"
+        :loading="cargando"
+        @keyup.enter="getMiembroFilter(filter)"
+        label="BUSCAR MIEMBROS POR NOMBRE O CÉDULA">
+        </v-text-field>
+        <v-btn variant="outlined"
+            @click="obtenerMiembros()"
+            color="warning"
+        >
+          VER TODOS LOS MIEMBROS
+        </v-btn>
+      </v-card-text>
+      
+
+    </v-card>
+
     <v-data-table
       :loading="cargando"
       :headers="encabezadoTabla"
@@ -191,6 +209,7 @@ import BusquedaMiembro from "./BusquedaMiembro.vue";
 
 export default {
   name: "Miembros",
+  filter: "",
   components: { RealizarPago, DialogoEliminar, CredencialMiembro, BusquedaMiembro },
 
   data: () => ({
@@ -263,6 +282,23 @@ export default {
   },
 
   methods: {
+    getMiembroFilter(filter) {
+      this.cargando = true;
+      const payload = { metodo: "getMiembroFilter", busqueda: filter };
+      HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
+        console.log(resultado.length)
+        console.log(resultado)
+        this.cargando = false;
+        if(resultado.length) this.miembros = resultado;
+        else {
+          this.mensaje.texto = "No se halló el miembro en nuestros registros."
+          this.mensaje.color = "error"
+          this.mostrarMensaje=true;
+        }
+        this.filter = "";
+      });
+    },
+
     generarCredencial(miembro){
       this.matriculaSeleccionada = miembro.matricula
       this.miembro = miembro
