@@ -115,7 +115,7 @@ export default {
 <style >
 .fondo{
   background-color: #206336;
-  background-image: url("../../assets/fondo_4.svg");
+  background-image: url("../../assets/fondo_4.jpg");
   background-attachment: fixed;
   background-size: cover;
   height: 100%;
