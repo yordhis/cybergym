@@ -4,8 +4,14 @@
       <v-layout align-center justify-center>
     
         <v-flex xs12 sm8 md4>
-          
-          <v-card class="elevation-12" height="100%">
+            <!-- <div style="background-color: #206336; border-radius: 100%; height: 120px; width: 150px;  ">
+              <v-card-text class="py-4 text-center">
+                <img src="@/assets/logo.png" width="100" alt="">
+              </v-card-text>
+
+            </div> -->
+
+          <v-card class="elevation-12" height="100%" >
             <v-toolbar dark color="#206336">
               <v-toolbar-title>Iniciar sesión</v-toolbar-title>
             </v-toolbar>
@@ -34,9 +40,7 @@
               <v-btn color="#206336" width="100%" style="color: aliceblue;" @click="iniciarSesion">Ingresar</v-btn>
             </v-card-actions>
 
-            <v-card-text class="py-2 text-center">
-              <img src="@/assets/logo.png" width="100" alt="">
-            </v-card-text>
+         
 
             <v-card-text class="py-2 text-center">
               {{ new Date().getFullYear() }} — Desarrollado por <a href="https://cyberstaffstore.com/" target="_blank">Cyber Staff C.A | Click para soporte</a> 
@@ -110,8 +114,8 @@ export default {
 </script>
 <style >
 .fondo{
-  background-color: #03501467;
-  background-image: url("../../assets/fondo_cybergym.jpg");
+  background-color: #206336;
+  background-image: url("../../assets/fondo_4.jpg");
   background-attachment: fixed;
   background-size: cover;
   height: 100%;
