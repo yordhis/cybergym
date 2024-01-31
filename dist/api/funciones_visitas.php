@@ -83,3 +83,9 @@ function registrarVisitaRegular($visita){
 
 }
 
+function eliminarVisita($id){
+    $sentencia = "DELETE FROM visitas WHERE idMiembro = ? AND fecha = ?";
+    $parametros = [$id, date('Y-m-d H:i:s')];
+    return eliminarConParametros($sentencia, $parametros);
+}
+

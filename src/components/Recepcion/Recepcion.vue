@@ -56,15 +56,15 @@
                 {{ miembroSeleccionado.estado ? miembroSeleccionado.estado : "Agregar membresia"}}
               </v-btn>
 
-              <v-btn
+              <!-- <v-btn
                 inline
-                color="info"
+                color="warning"
                 rounded="sm"
                 size="s-small"
-                v-on:click="registrarVisitaRegular(miembroSeleccionado)"
+                v-on:click="eliminarVisitaRegular(miembroSeleccionado)"
               >
-                Registrar Visita
-              </v-btn>
+                Eliminar visita
+              </v-btn> -->
             </v-card-title>
           </v-card>
         </v-col>
@@ -158,13 +158,13 @@ export default {
         "inicio.php"
       ).then(resultado => {
         this.crearCartas(resultado.datosVisitas, resultado.datosPagos);
-        this.etiquetasVisitasHora = Utiles.obtenerClaves(resultado.visitasHora);
-        this.valoresVisitasHora = Utiles.obtenerValores(resultado.visitasHora);
-        let visitasSemana = Utiles.cambiarDiaSemana(resultado.visitasSemana);
-        this.etiquetasVisitasSemana = Utiles.obtenerClaves(visitasSemana);
-        this.valoresVisitasSemana = Utiles.obtenerValores(visitasSemana);
-        this.etiquetasVisitasMes = Utiles.obtenerClaves(resultado.visitasMes);
-        this.valoresVisitasMes = Utiles.obtenerValores(resultado.visitasMes);
+        // this.etiquetasVisitasHora = Utiles.obtenerClaves(resultado.visitasHora);
+        // this.valoresVisitasHora = Utiles.obtenerValores(resultado.visitasHora);
+        // let visitasSemana = Utiles.cambiarDiaSemana(resultado.visitasSemana);
+        // this.etiquetasVisitasSemana = Utiles.obtenerClaves(visitasSemana);
+        // this.valoresVisitasSemana = Utiles.obtenerValores(visitasSemana);
+        // this.etiquetasVisitasMes = Utiles.obtenerClaves(resultado.visitasMes);
+        // this.valoresVisitasMes = Utiles.obtenerValores(resultado.visitasMes);
 
         this.cargando = false;
       });
@@ -194,7 +194,6 @@ export default {
     },
 
     registrarVisitaRegular(data) {
-      console.log(data);
       this.cargando = true;
       HttpService.registrar(
         {
@@ -209,11 +208,39 @@ export default {
         if (resultado) {
           this.cargando = false;
           // this.mostrarDialogoRegular = false
+          this.obtenerDatos();
           this.mostrarMensaje = true;
           this.mensaje = {
-            texto: "Visita regular registrar",
+            texto: "Visita registrada",
             color: "success"
           };
+        }
+      });
+    },
+
+    eliminarVisitaRegular(data){
+      console.log(data);
+      console.log(data.id);
+      this.cargando = true;
+      HttpService.eliminar(
+        "visitas.php",
+        {
+          metodo: "eliminar_visita",
+          data: data.id
+        }
+       
+      ).then(resultado => {
+        if (resultado) {
+          console.log(resultado);
+          this.cargando = false;
+       
+
+          this.mostrarMensaje = resultado;
+          this.mensaje = {
+            texto: "Visita eliminada",
+            color: "success"
+          };
+          this.obtenerDatos();
         }
       });
     },
@@ -251,7 +278,7 @@ export default {
         this.mostrarMensaje = true;
         if(this.fechaActual > this.miembroSeleccionado.fechaFin) this.miembroSeleccionado.estado = 'VENCIDO';
 
-        this.getMiembro(this.miembroSeleccionado.cedula);
+        this.getMiembro(this.miembroSeleccionado.cedula, false);
         console.log(this.miembroSeleccionado);
         
         this.miembroSeleccionado.estado = 'ACTIVO';
@@ -271,7 +298,7 @@ export default {
         : "warning";
     },
 
-    getMiembro(cedula) {
+    getMiembro(cedula, activeRV = true) {
       this.cargando = true;
       const payload = { metodo: "getMiembro", busqueda: cedula };
       HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
@@ -279,6 +306,8 @@ export default {
         this.cargando = false;
         this.miembroSeleccionado = resultado.length ? resultado[0] : {};
         this.cedula = "";
+        
+        activeRV ? this.registrarVisitaRegular(this.miembroSeleccionado) : "";
       });
     },
 

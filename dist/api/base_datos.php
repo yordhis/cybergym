@@ -38,6 +38,11 @@ function eliminar($sentencia, $id ){
     $respuesta = $bd->prepare($sentencia);
     return $respuesta->execute([$id]);
 }
+function eliminarConParametros($sentencia, $parametros ){
+    $bd = conectarBaseDatos();
+    $respuesta = $bd->prepare( $sentencia );
+    return $respuesta->execute( $parametros );
+}
 
 function editar($sentencia, $parametros ){
     $bd = conectarBaseDatos();

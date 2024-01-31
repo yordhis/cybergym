@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <v-app-bar color="primary" class="flex-grow-0" app dark>
+  <div >
+    <v-app-bar  color="#206336" class="flex-grow-0" app dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
       <v-toolbar-title>
         <!-- <img src="@/assets/logo.png" width="50"> -->
@@ -12,7 +12,8 @@
         <v-icon>logout</v-icon>
       </v-btn>
     </v-app-bar>
-    <v-navigation-drawer app v-model="drawer" class="fondo">
+    <v-navigation-drawer app v-model="drawer" color="#206336">
+
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6 white--text"> 
@@ -28,7 +29,9 @@
           <v-list-item-subtitle class="text-h6 white--text"> {{ rolUsuario.toLowerCase() }} </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
+
       <v-divider></v-divider>
+
       <v-list dense nav>
         <v-list-item
           v-for="item in items"
@@ -46,6 +49,7 @@
           </v-list-item-content>
         </v-list-item>
       </v-list>
+
     </v-navigation-drawer>
   </div>
 </template>
@@ -130,9 +134,9 @@ export default {
 
 </script>
 <style>
-.fondo {
-  background-color: #003333;
-  background-attachment: fixed;
-  background-size: cover;
+.fondo_2 {
+  background-color: #206336;
+  /* background-attachment: fixed; */
+  /* background-size: cover; */
 }
 </style>

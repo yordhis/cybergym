@@ -167,7 +167,7 @@ export default {
   mounted(){
     this.obtenerMembresias();
     this.miembro = this.getMiembroMatricula(this.matricula)
-    console.log(this.miembro);
+
   },
 
   methods:{
@@ -176,8 +176,6 @@ export default {
     getMiembroMatricula(matricula) {
       const payload = { metodo: "getMiembroMatricula", busqueda: matricula };
       HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
-        console.log(resultado.length)
-        console.log(resultado)
         this.miembro = resultado.length ? resultado[0] : {};
       });
     },

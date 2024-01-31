@@ -19,6 +19,9 @@ switch($metodo){
     case "registrar_regular":
         echo json_encode(registrarVisitaRegular($payload->visita));
         break;
+    case "eliminar_visita":
+        echo json_encode(eliminarVisita($payload->data));
+        break;
     case "obtener":
         echo json_encode(
            [

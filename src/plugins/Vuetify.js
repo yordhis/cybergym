@@ -3,11 +3,12 @@ import Vue from 'vue'
 
 Vue.use(Vuetify, {
     theme: {
-        dark: false,
+        primary: "#206336",
+        dark: true,
       },
       themes: {
         light: {
-          primary: "#003333",
+          primary: "#206336",
           secondary: "#b0bec5",
           accent: "#8c9eff",
           error: "#b71c1c",
