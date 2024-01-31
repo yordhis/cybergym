@@ -306,8 +306,7 @@ export default {
         this.cargando = false;
         this.miembroSeleccionado = resultado.length ? resultado[0] : {};
         this.cedula = "";
-        
-        activeRV ? this.registrarVisitaRegular(this.miembroSeleccionado) : "";
+        if(resultado.length != 0) activeRV ? this.registrarVisitaRegular(this.miembroSeleccionado) : "";
       });
     },
 
