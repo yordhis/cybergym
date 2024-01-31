@@ -24,8 +24,6 @@ function generarMatricula(){
     return date('Y').'-'.$ultimoId;
 }
 
-
-
 function obtenerMiembros(){
     $sentencia = "SELECT miembros.*, membresias.nombre AS membresia 
     FROM miembros
@@ -38,8 +36,39 @@ function obtenerMiembroNombreMatricula($busqueda){
     $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
     FROM miembros
     LEFT JOIN membresias ON membresias.id = miembros.idMembresia
-    WHERE miembros.cedula LIKE ? ";
-    $parametros = [ "%".$busqueda."%" ];
+    WHERE miembros.cedula LIKE ? OR miembros.nombre LIKE ?";
+    $parametros = [ "%".$busqueda."%", "%".$busqueda."%" ];
+    $miembros = selectPrepare($sentencia, $parametros);
+    return verificarMembresia( $miembros );
+}
+
+function getMiembroFilter($filter){
+    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    FROM miembros
+    LEFT JOIN membresias ON membresias.id = miembros.idMembresia
+    WHERE miembros.cedula = ?";
+    $parametros = [ $filter ];
+    $miembros =  selectPrepare( $sentencia, $parametros );
+    return verificarMembresia( $miembros );
+}
+
+function getMiembro($cedula){
+    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    FROM miembros
+    LEFT JOIN membresias ON membresias.id = miembros.idMembresia
+    WHERE miembros.cedula = ? ";
+    $parametros = [ $cedula ];
+    $miembros =  selectPrepare( $sentencia, $parametros );
+    return verificarMembresia( $miembros );
+    // return selectPrepare($sentencia, $parametros);
+}
+
+function getMiembroMatricula($matricula){
+    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    FROM miembros
+    LEFT JOIN membresias ON membresias.id = miembros.idMembresia
+    WHERE miembros.matricula = ? ";
+    $parametros = [ $matricula ];
     return selectPrepare($sentencia, $parametros);
 }
 
@@ -47,7 +76,7 @@ function registrarPago($pago){
     $sentencia = "INSERT INTO pagos (matricula, idMembresia, idUsuario, fecha, monto, metodo_pago) VALUES (?,?,?,?,?,?)";
     $parametros = [$pago->matricula, $pago->idMembresia, $pago->idUsuario, $pago->fecha, $pago->pago, $pago->metodosDePago];
     $pagoRegistrado = insertar($sentencia, $parametros);
-    if($pagoRegistrado) return actualizarMembresia($pago->matricula, $pago->idMembresia, $pago->duracion, $pago->fecha);
+    if($pagoRegistrado) return actualizarMembresia($pago->matricula, $pago->idMembresia, $pago->duracion, $pago->fechaInicio);
 }
 
 function actualizarMembresia($matricula, $idMembresia, $duracion, $fecha){

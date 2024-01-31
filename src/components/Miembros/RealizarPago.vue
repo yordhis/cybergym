@@ -19,6 +19,15 @@
             >
             </v-select>
 
+            <template>
+              <v-container fluid>
+                <v-checkbox
+                  v-model="estatusUsoFechaNueva"
+                  :label="`Usar fecha de pago para la membresia: ${estatusUsoFechaNueva.toString()}`"
+                ></v-checkbox>
+              </v-container>
+            </template>
+
             <template v-if="alert_model.text != '' ">
               <v-alert 
                 :color="alert_model.color"
@@ -141,6 +150,7 @@ export default {
   data:()=>({
     membresiaSeleccionada: { id: "", nombre: "", precio: "", duracion: "" },
     fechaSeleccionada: "",
+    estatusUsoFechaNueva: false,
     membresias: [],
     cargando: false,
     alert_model:{ color: "", text: "", title: "", icono:""},
@@ -150,14 +160,29 @@ export default {
     masMetodo:false,
     montoM1:0,
     montoM2:0,
+    miembro:{}
   
   }),
 
   mounted(){
     this.obtenerMembresias();
+    this.miembro = this.getMiembroMatricula(this.matricula)
+    console.log(this.miembro);
   },
 
   methods:{
+
+
+    getMiembroMatricula(matricula) {
+      const payload = { metodo: "getMiembroMatricula", busqueda: matricula };
+      HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
+        console.log(resultado.length)
+        console.log(resultado)
+        this.miembro = resultado.length ? resultado[0] : {};
+      });
+    },
+
+
     agregarMonto1(){
       this.montoM1 = this.membresiaSeleccionada.precio;
     },
@@ -223,7 +248,7 @@ export default {
         return setTimeout(()=>{this.alert_model.text=""},1500);
       }
 
-     
+     console.log(this.miembro);
       let payload = {
         metodo: 'pagar',
         pago: {
@@ -232,10 +257,15 @@ export default {
           idMembresia: this.membresiaSeleccionada.id,
           duracion: this.membresiaSeleccionada.duracion,
           fecha: this.fechaSeleccionada,
+          fechaInicio: this.estatusUsoFechaNueva ? this.fechaSeleccionada : this.miembro.fechaFin 
+                                                                          ? this.miembro.fechaFin
+                                                                          : this.fechaSeleccionada,
           idUsuario: localStorage.getItem('idUsuario'),
           metodosDePago: metodosDePagoFinal
         }
       }
+
+      console.log(payload);
       
       HttpService.registrar(payload,"miembros.php")
       .then(registrado => {

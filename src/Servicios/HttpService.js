@@ -1,5 +1,7 @@
-const RUTA_GLOBAL = "http://localhost/sistema-gimnasio-main/api/"
-// const RUTA_GLOBAL = `${window.location.protocol}//${window.location.host}/api/`;
+// const RUTA_GLOBAL = "http://localhost/sistema-gimnasio-main/api/"
+const RUTA_GLOBAL = `${window.location.protocol}//${window.location.host}/api/`;
+
+console.log(RUTA_GLOBAL);
 
 const HttpService = {
     async registrar(datos, ruta){

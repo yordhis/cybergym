@@ -35,6 +35,13 @@ switch($metodo){
     case("getMiembro"):
         echo json_encode(getMiembro($payload->busqueda));
     break;
+    case("getMiembroMatricula"):
+        echo json_encode(getMiembroMatricula($payload->busqueda));
+    break;
+
+    case("getMiembroFilter"):
+        echo json_encode(obtenerMiembroNombreMatricula($payload->busqueda));
+    break;
     
     case("obtener_imagen"):
         echo json_encode(obtenerImagenPorMatricula($payload->matricula));
