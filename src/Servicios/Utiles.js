@@ -1,6 +1,6 @@
-// const RUTA_IMAGEN = "http://localhost/sistema-gimnasio-main/dist/api/"
+// const RUTA_IMAGEN = "http://localhost/sistema-gimnasio-main/api/"
 
- const RUTA_IMAGEN = `${window.location.protocol}//${window.location.host}/api/`;
+ const RUTA_IMAGEN = `${window.location.protocol}//${window.location.host}/public/api/`;
 
 const DIAS = ["Domingo" ,"Lunes" ,"Martes" ,"Miércoles" ,"Jueves" ,"Viernes" ,"Sábado"]
 const MESES = ["Enero" ,"Febrero" ,"Marzo" ,"Abril" ,"Mayo" ,"Junio" ,"Julio" ,"Agosto" ,"Septiembre" ,"Octubre" ,"Noviembre" ,"Diciembre"]

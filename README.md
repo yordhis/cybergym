@@ -4,7 +4,7 @@
 
 # CREDENCIALES
 USER: admin 
-PASS: 87654321
+PASS: cs12345678
 
 USER: recepcionista 
 PASS: recepcionista
