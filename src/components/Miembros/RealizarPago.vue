@@ -23,7 +23,7 @@
               <v-container fluid>
                 <v-checkbox
                   v-model="estatusUsoFechaNueva"
-                  :label="`Usar fecha de pago para la membresia: ${estatusUsoFechaNueva.toString()}`"
+                  :label="`Usar fecha de pago para la membresia`"
                 ></v-checkbox>
               </v-container>
             </template>
