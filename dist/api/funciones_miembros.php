@@ -64,7 +64,7 @@ function getMiembro($cedula){
 }
 
 function getMiembroMatricula($matricula){
-    $sentencia = "SELECT miembros.*, membresias.nombre AS membresia, membresias.id AS idMembresia 
+    $sentencia = "SELECT miembros.*, miembros.fechaFin, membresias.nombre AS membresia, membresias.id AS idMembresia 
     FROM miembros
     LEFT JOIN membresias ON membresias.id = miembros.idMembresia
     WHERE miembros.matricula = ? ";

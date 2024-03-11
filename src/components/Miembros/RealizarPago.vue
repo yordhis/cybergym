@@ -145,7 +145,7 @@
 import HttpService from '../../Servicios/HttpService'
 export default {
   name: "RealizarPago",
-  props: ["matricula"],
+  props: ["matricula", "fechaFin"],
 
   data:()=>({
     membresiaSeleccionada: { id: "", nombre: "", precio: "", duracion: "" },
@@ -166,7 +166,7 @@ export default {
 
   mounted(){
     this.obtenerMembresias();
-    this.miembro = this.getMiembroMatricula(this.matricula)
+    this.miembro = this.getMiembroMatricula(this.matricula);
 
   },
 
@@ -177,6 +177,7 @@ export default {
       const payload = { metodo: "getMiembroMatricula", busqueda: matricula };
       HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
         this.miembro = resultado.length ? resultado[0] : {};
+        console.log(this.miembro);
       });
     },
 
@@ -245,8 +246,21 @@ export default {
         this.alert_model.title="Requerido"
         return setTimeout(()=>{this.alert_model.text=""},1500);
       }
+ 
 
      console.log(this.miembro);
+     let fechaDeInicioDeLamembresia = "";
+     if(this.estatusUsoFechaNueva){
+      fechaDeInicioDeLamembresia = this.fechaSeleccionada
+    }else{
+      console.log(this.miembro.fechaFin);
+      if(this.miembro.fechaFin){
+        fechaDeInicioDeLamembresia = this.miembro.fechaFin
+      }else{
+        fechaDeInicioDeLamembresia = this.fechaSeleccionada
+      }
+     }
+
       let payload = {
         metodo: 'pagar',
         pago: {
@@ -255,9 +269,7 @@ export default {
           idMembresia: this.membresiaSeleccionada.id,
           duracion: this.membresiaSeleccionada.duracion,
           fecha: this.fechaSeleccionada,
-          fechaInicio: this.estatusUsoFechaNueva ? this.fechaSeleccionada : this.miembro.fechaFin 
-                                                                          ? this.miembro.fechaFin
-                                                                          : this.fechaSeleccionada,
+          fechaInicio: fechaDeInicioDeLamembresia,
           idUsuario: localStorage.getItem('idUsuario'),
           metodosDePago: metodosDePagoFinal
         }
@@ -271,6 +283,7 @@ export default {
           this.cargando = false
           this.$emit("pagado", registrado)
           console.log(registrado)
+          window.location.reload()
         }
       })
 
