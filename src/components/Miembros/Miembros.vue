@@ -68,22 +68,24 @@
           <span>Editar</span>
         </v-tooltip>
 
-        <v-tooltip bottom color="error">
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn
-              color="error"
-              small
-              fab
-              dark
-              v-bind="attrs"
-              v-on="on"
-              @click="eliminar(item)"
-            >
-              <v-icon>mdi-delete</v-icon>
-            </v-btn>
-          </template>
-          <span>Eliminar</span>
-        </v-tooltip>
+        <template v-if="rolUsuario == 'ADMINISTRADOR'">
+          <v-tooltip bottom color="error">
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn
+                color="error"
+                small
+                fab
+                dark
+                v-bind="attrs"
+                v-on="on"
+                @click="eliminar(item)"
+              >
+                <v-icon>mdi-delete</v-icon>
+              </v-btn>
+            </template>
+            <span>Eliminar</span>
+          </v-tooltip>
+        </template>
 
         <v-tooltip bottom color="secondary">
           <template v-slot:activator="{ on, attrs }">
@@ -274,11 +276,13 @@ export default {
     itemSeleccionado: null,
     miembro: null,
     mostrarDialogoEliminar: false,
-    mostrarCredencial: false
+    mostrarCredencial: false,
+    rolUsuario: ""
   }),
 
   mounted() {
     this.obtenerMiembros();
+    this.rolUsuario = localStorage.getItem("rolUsuario");
   },
 
   methods: {

@@ -1,5 +1,5 @@
 //const RUTA_GLOBAL = "http://localhost/sistema-gimnasio-main/api/"
-const RUTA_GLOBAL = `${window.location.protocol}//${window.location.host}/public/api/`;
+const RUTA_GLOBAL = `${window.location.protocol}//${window.location.host}/api/`;
 
 console.log(RUTA_GLOBAL);
 
