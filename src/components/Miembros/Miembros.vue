@@ -28,7 +28,7 @@
       :loading="cargando"
       :headers="encabezadoTabla"
       :items="miembros"
-      item-key="matricula"
+      item-key="id"
       show-expand
       class="elevation-1"
       :footer-props="{ itemsPerPageText: 'Por página' }"
@@ -156,6 +156,7 @@
         </td>
       </template>
     </v-data-table>
+    
     <v-btn
       fab
       dark
@@ -169,6 +170,7 @@
     >
       <v-icon dark>add</v-icon>
     </v-btn>
+
     <v-dialog v-model="mostrarRealizarPago" persistent max-width="600">
       <realizar-pago
         :matricula="matriculaSeleccionada"

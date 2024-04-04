@@ -2,10 +2,35 @@
   <div>
     <v-card>
       <v-card-title>
-        <span class="text-h5">Realizar pago para {{matricula}}</span>
+        <span class="text-h5">Renovar membresia para {{miembro.nombre}}</span>
       </v-card-title>
       <v-card-text>
+
           <v-container>
+
+            <template>
+              <v-card
+                :color="miembro.estado == 'VENCIDO' ? 'red' : 'green' "
+                class="mx-auto px-2 mb-2"
+                max-width="100%"
+              >
+                <v-card-item>
+                  <div>
+                    <div class="text-h6 mb-1 p-2">
+                      Datos de membresia
+                    </div>
+                    
+                    <div class="text-caption p-2">
+                      <b>Membresia:</b> {{ miembro.membresia ? miembro.membresia : "No tiene membresia" }} <br>
+                      <b>Fecha de vencimiento de membresia:</b> {{ miembro.fechaFin ? miembro.fechaFin : "No tiene fecha de vencimiento"}} <br>
+                      <b>Cantidad de días vencidos:</b> {{ diasDeDiferencia }}<br>
+                    </div>
+                  </div>
+                </v-card-item>
+              </v-card>
+            </template>
+
+
             <v-select
               v-model="membresiaSeleccionada"
               :hint="`${membresiaSeleccionada.nombre}, ${membresiaSeleccionada.precio}`"
@@ -19,14 +44,9 @@
             >
             </v-select>
 
-            <template>
-              <v-container fluid>
-                <v-checkbox
-                  v-model="estatusUsoFechaNueva"
-                  :label="`Usar fecha de pago para la membresía`"
-                ></v-checkbox>
-              </v-container>
-            </template>
+            
+           
+
 
             <template v-if="alert_model.text != '' ">
               <v-alert 
@@ -37,16 +57,32 @@
               >{{ alert_model.text }}</v-alert>
 
             </template>
+            
+            <template>
+              <v-container fluid>
+                <v-checkbox
+                  v-model="estatusUsoFechaNueva"
+                  :disabled="true"
+                  label="Se ha activado el modificador de fecha de membresia seleccione una fecha"
+                ></v-checkbox>
+              </v-container>
 
+              <v-row justify="center">
+                <v-date-picker
+                  show-adjacent-months
+                  :disabled="this.diasDeDiferencia >= 7 ? false : true"
+                  v-model="fechaNuevaDeMembresiaSeleccionada"
+                  title="Su fecha de membresia es:"
+                  color="primary"
+                  :first-day-of-week="1"
+                  :min="miembro.fechaFin"
+                 
+                  locale="es-se"
+                ></v-date-picker>
+              
+              </v-row>
 
-            <v-row justify="center">
-              <v-date-picker
-                v-model="fechaSeleccionada"
-                :first-day-of-week="1"
-                locale="es-se"
-              >
-              </v-date-picker>
-            </v-row>
+            </template>
 
             <v-row>
               <v-col cols5>
@@ -149,7 +185,8 @@ export default {
 
   data:()=>({
     membresiaSeleccionada: { id: "", nombre: "", precio: "", duracion: "" },
-    fechaSeleccionada: "",
+    fechaDePago: new Date(Date.now()).toISOString().split('T')[0],
+    fechaNuevaDeMembresiaSeleccionada: "",
     estatusUsoFechaNueva: false,
     membresias: [],
     cargando: false,
@@ -160,27 +197,37 @@ export default {
     masMetodo:false,
     montoM1:0,
     montoM2:0,
-    miembro:{}
+    diasDeDiferencia: 0,
+    miembro:{},
   
   }),
 
   mounted(){
     this.obtenerMembresias();
-    this.miembro = this.getMiembroMatricula(this.matricula);
+    this.getMiembroMatricula(this.matricula);
+
 
   },
 
   methods:{
 
+ 
 
     getMiembroMatricula(matricula) {
       const payload = { metodo: "getMiembroMatricula", busqueda: matricula };
-      HttpService.obtenerConDatos(payload, "miembros.php").then((resultado) => {
+      HttpService.obtenerConDatos(payload, "miembros.php")
+      .then((resultado) => {
         this.miembro = resultado.length ? resultado[0] : {};
         console.log(this.miembro);
+        console.log(this.miembro.fechaFin);
+        let fecha1 = new Date(this.miembro.fechaFin.split(" ")[0]);
+        let fecha2 = new Date(new Date(Date.now()).toISOString().split('T')[0]);
+        let diferencia = fecha2.getTime() - fecha1.getTime();
+        
+        this.diasDeDiferencia = diferencia / 1000 / 60 / 60 / 24;
+        this.estatusUsoFechaNueva = this.diasDeDiferencia >= 7 ? true : false;
       });
     },
-
 
     agregarMonto1(){
       this.montoM1 = this.membresiaSeleccionada.precio;
@@ -194,6 +241,7 @@ export default {
     agregarMetodo(){
       this.masMetodo = true;
     },
+
     obtenerMembresias() {
       const payload = { metodo: "get" };
       HttpService.obtenerConDatos(payload, "membresias.php").then(
@@ -203,7 +251,7 @@ export default {
       );
     },
 
-    cerrarDialogo(){
+    cerrarDialogo(){    
       this.$emit("cerrar", false)
     },
 
@@ -218,8 +266,8 @@ export default {
       }
 
       /** validamos la fecha */
-      if(this.fechaSeleccionada == ""){
-        this.alert_model.text="Debe seleccionar una fecha";
+      if( this.fechaNuevaDeMembresiaSeleccionada == "" && this.estatusUsoFechaNueva == true ){
+        this.alert_model.text="Debe seleccionar una fecha para la membresia";
         this.alert_model.color="error";
         this.alert_model.icono="$error";
         this.alert_model.title="Requerido"
@@ -250,16 +298,16 @@ export default {
 
      console.log(this.miembro);
      let fechaDeInicioDeLamembresia = "";
-     if(this.estatusUsoFechaNueva){
-      fechaDeInicioDeLamembresia = this.fechaSeleccionada
-    }else{
-      console.log(this.miembro.fechaFin);
-      if(this.miembro.fechaFin){
-        fechaDeInicioDeLamembresia = this.miembro.fechaFin
+      if(this.estatusUsoFechaNueva){
+        fechaDeInicioDeLamembresia = this.fechaNuevaDeMembresiaSeleccionada
       }else{
-        fechaDeInicioDeLamembresia = this.fechaSeleccionada
+        console.log(this.miembro.fechaFin);
+        if(this.miembro.fechaFin){
+          fechaDeInicioDeLamembresia = this.miembro.fechaFin;
+        }else{
+          fechaDeInicioDeLamembresia = this.fechaDePago;
+        }
       }
-     }
 
       let payload = {
         metodo: 'pagar',
@@ -268,14 +316,12 @@ export default {
           pago: this.membresiaSeleccionada.precio,
           idMembresia: this.membresiaSeleccionada.id,
           duracion: this.membresiaSeleccionada.duracion,
-          fecha: this.fechaSeleccionada,
+          fecha: this.fechaDePago, // fecha de pago
           fechaInicio: fechaDeInicioDeLamembresia,
           idUsuario: localStorage.getItem('idUsuario'),
           metodosDePago: metodosDePagoFinal
         }
       }
-
-      console.log(payload);
       
       HttpService.registrar(payload,"miembros.php")
       .then(registrado => {
