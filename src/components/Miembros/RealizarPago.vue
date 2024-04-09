@@ -185,7 +185,7 @@ export default {
 
   data:()=>({
     membresiaSeleccionada: { id: "", nombre: "", precio: "", duracion: "" },
-    fechaDePago: new Date(Date.now()).toISOString().split('T')[0],
+    fechaDePago: new Date(),
     fechaNuevaDeMembresiaSeleccionada: "",
     estatusUsoFechaNueva: false,
     membresias: [],
@@ -206,7 +206,8 @@ export default {
     this.obtenerMembresias();
     this.getMiembroMatricula(this.matricula);
 
-
+    this.fechaDePago = this.formatearFechaParaDB(this.fechaDePago.toLocaleString())
+    console.log(this.fechaDePago);
   },
 
   methods:{
@@ -227,6 +228,20 @@ export default {
         this.diasDeDiferencia = diferencia / 1000 / 60 / 60 / 24;
         this.estatusUsoFechaNueva = this.diasDeDiferencia >= 7 ? true : false;
       });
+    },
+
+    formatearFechaParaDB(fecha) {
+      console.log(fecha);
+      let array =  fecha.split(',');
+      date = array[0].split('/').reverse().join('-')
+      time = array[1].trim().split(' ')[0]
+      return date + " " + time
+    },
+
+
+    getDiasVencidas(fecha_inicio, fecha_fin) {
+        diferencia = fecha_fin.getTime() - fecha_inicio.getTime() ;
+        return Math.round(diferencia / 1000 / 60 / 60 / 24);
     },
 
     agregarMonto1(){
@@ -322,6 +337,7 @@ export default {
           metodosDePago: metodosDePagoFinal
         }
       }
+      return console.log(payload)
       
       HttpService.registrar(payload,"miembros.php")
       .then(registrado => {

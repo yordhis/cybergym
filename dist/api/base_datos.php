@@ -52,9 +52,9 @@ function editar($sentencia, $parametros ){
 
 function conectarBaseDatos() {
 	$host = "localhost";
-	$db   = "u378371366_cybergym";
-	$user = "u378371366_cybergym";
-	$pass = "7#akW+B2cG";
+	$db   = "cybergym";
+	$user = "root";
+	$pass = "";
 	$charset = 'utf8mb4';
 
 	$options = [
