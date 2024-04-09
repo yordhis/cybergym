@@ -219,28 +219,24 @@ export default {
       HttpService.obtenerConDatos(payload, "miembros.php")
       .then((resultado) => {
         this.miembro = resultado.length ? resultado[0] : {};
-        console.log(this.miembro);
-        console.log(this.miembro.fechaFin);
-        let fecha1 = new Date(this.miembro.fechaFin.split(" ")[0]);
-        let fecha2 = new Date(new Date(Date.now()).toISOString().split('T')[0]);
-        let diferencia = fecha2.getTime() - fecha1.getTime();
-        
-        this.diasDeDiferencia = diferencia / 1000 / 60 / 60 / 24;
+        this.diasDeDiferencia = this.getDiasVencidas()
         this.estatusUsoFechaNueva = this.diasDeDiferencia >= 7 ? true : false;
       });
     },
 
     formatearFechaParaDB(fecha) {
-      console.log(fecha);
+     
       let array =  fecha.split(',');
-      date = array[0].split('/').reverse().join('-')
-      time = array[1].trim().split(' ')[0]
+      let date = array[0].split('/').reverse().join('-')
+      let time = array[1].trim().split(' ')[0]
       return date + " " + time
     },
 
 
-    getDiasVencidas(fecha_inicio, fecha_fin) {
-        diferencia = fecha_fin.getTime() - fecha_inicio.getTime() ;
+    getDiasVencidas() {
+        let fecha1 = new Date(this.miembro.fechaFin.split(" ")[0]);
+        let fecha2 = new Date(new Date(Date.now()).toISOString().split('T')[0]);
+        let diferencia = fecha2.getTime() - fecha1.getTime();
         return Math.round(diferencia / 1000 / 60 / 60 / 24);
     },
 
@@ -310,13 +306,10 @@ export default {
         return setTimeout(()=>{this.alert_model.text=""},1500);
       }
  
-
-     console.log(this.miembro);
      let fechaDeInicioDeLamembresia = "";
       if(this.estatusUsoFechaNueva){
         fechaDeInicioDeLamembresia = this.fechaNuevaDeMembresiaSeleccionada
       }else{
-        console.log(this.miembro.fechaFin);
         if(this.miembro.fechaFin){
           fechaDeInicioDeLamembresia = this.miembro.fechaFin;
         }else{
@@ -337,7 +330,6 @@ export default {
           metodosDePago: metodosDePagoFinal
         }
       }
-      return console.log(payload)
       
       HttpService.registrar(payload,"miembros.php")
       .then(registrado => {
@@ -348,8 +340,6 @@ export default {
           window.location.reload()
         }
       })
-
-      console.log(payload)
     }
 
   }
